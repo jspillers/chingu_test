@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'rubygems' rescue nil
-$LOAD_PATH.unshift File.join(File.expand_path(__FILE__), "..", "..", "lib")
+$LOAD_PATH.unshift File.join(File.expand_path(__FILE__), "lib")
 require 'chingu'
 require 'state_machine'
 
