@@ -1,36 +1,3 @@
-#!/usr/bin/env ruby
-require 'rubygems' rescue nil
-$LOAD_PATH.unshift File.join(File.expand_path(__FILE__), "lib")
-require 'chingu'
-require 'state_machine'
-
-include Gosu
-
-#
-# A minimalistic Chingu example.
-# Chingu::Window provides #update and #draw which calls corresponding methods for all objects based on Chingu::Actors
-#
-# Image["picture.png"] is a deployment safe shortcut to Gosu's Image.new and supports multiple locations for "picture.png"
-# By default current dir, media\ and gfx\ is searched. To add own directories:
-#
-# Image.autoload_dirs << File.join(self.root, "data", "my_image_dir")  
-# 
-class Game < Chingu::Window
-  def initialize
-    super
-    self.input = { :escape => :exit } # exits example on Escape
-    @miner = Miner.create(:x => 200, :y => 200, :image => Image["miner.gif"])
-    @bank_balance = Chingu::Text.create("", :size => 20, :x => 20, :y => 20)
-    @pocket_balance = Chingu::Text.create("", :size => 20, :x => 20, :y => 50)
-  end
-
-  def update
-    super
-    @bank_balance.text = "Gold in the bank: #{@miner.money_in_bank}"
-    @pocket_balance.text = "Gold in pocket: #{@miner.gold_carried}"
-  end
-end
-
 class Miner < Chingu::GameObject  
   attr_accessor :location, :gold_carried, :money_in_bank, :thirst, :fatigue
 
@@ -47,6 +14,9 @@ class Miner < Chingu::GameObject
       @thirst += 1
       execute
     end
+  end
+
+  def on_message(sender, message, meta)
   end
 
   def pockets_full?
@@ -163,6 +133,3 @@ class Miner < Chingu::GameObject
     end
   end
 end
-
-
-Game.new.show
