@@ -1,22 +1,28 @@
-class Miner < Chingu::GameObject  
-  attr_accessor :location, :gold_carried, :money_in_bank, :thirst, :fatigue
+class Miner < BaseObject
+  attr_accessor :location, :gold_carried, :money_in_bank, :thirst, :fatigue, :x, :y
 
-  trait :timer
+  traits :timer, :vocal
 
   def initialize(opts)
     @gold_carried = 0
     @money_in_bank = 0
     @thirst = 0
     @fatigue = 0
+
     super(opts)
 
-    every(500) do
+    @animation = Chingu::Animation.new(file: "miner_73x109.png", delay: 500)
+    @animation.frame_names = { default: 0..0, mining: 0..1 }
+    @frame_name = :mining
+
+    every(1000) do
       @thirst += 1
       execute
     end
   end
 
-  def on_message(sender, message, meta)
+  def update
+    @image = @animation[@frame_name].next
   end
 
   def pockets_full?
@@ -61,31 +67,31 @@ class Miner < Chingu::GameObject
       transition :enter_mine_and_dig_for_nugget => :go_home_and_sleep_until_rested
     end
 
-    before_transition any => :enter_mine_and_dig_for_nugget do
-      puts 'Walkin to the gold mine'
+    before_transition any => :enter_mine_and_dig_for_nugget do |miner, trans|
+      miner.speak 'Walkin to the gold mine'
       @location = 'mine'
     end
 
-    before_transition :enter_mine_and_dig_for_nugget => :visit_bank_and_deposit_gold do
-      puts 'Mah pockets are full...'
+    before_transition :enter_mine_and_dig_for_nugget => :visit_bank_and_deposit_gold do |miner, trans|
+      miner.speak 'Mah pockets are full...'
     end
 
-    before_transition :enter_mine_and_dig_for_nugget => :quench_thirst do
-      puts 'Sure am thirsty!'
+    before_transition :enter_mine_and_dig_for_nugget => :quench_thirst do |miner, trans|
+      miner.speak 'Sure am thirsty!'
     end
 
-    before_transition any => :visit_bank_and_deposit_gold do
-      puts 'Walkin to the bank'
+    before_transition any => :visit_bank_and_deposit_gold do |miner, trans|
+      miner.speak 'Walkin to the bank'
       @location = 'bank'
     end
 
-    before_transition any => :go_home_and_sleep_until_rested do
-      puts 'Walkin to the shack'
+    before_transition any => :go_home_and_sleep_until_rested do |miner, trans|
+      miner.speak 'Walkin to the shack'
       @location = 'home'
     end
 
-    before_transition any => :quench_thirst do
-      puts 'Walkin to the saloon'
+    before_transition any => :quench_thirst do |miner, trans|
+      miner.speak 'Walkin to the saloon'
       @location = 'saloon'
     end
 
@@ -93,12 +99,12 @@ class Miner < Chingu::GameObject
       def execute
         @fatigue += 1
 
-        puts 'Mining for some gold'
+        speak 'Mining for some gold'
         if 1 + rand(6) > 3
-          puts 'Got me a nugget!'
+          speak 'Got me a nugget!'
           @gold_carried += 1
         else
-          puts 'couldn\'t find any gold'
+          speak 'couldn\'t find any gold'
         end
 
         tired if tired?
@@ -111,14 +117,14 @@ class Miner < Chingu::GameObject
       def execute
         @money_in_bank += @gold_carried
         @gold_carried = 0
-        puts 'Money in the bank baby!'
+        speak 'Money in the bank baby!'
         deposited_all_gold
       end
     end
 
     state :go_home_and_sleep_until_rested do
       def execute
-        puts 'ZzzZzZzz'
+        speak 'ZzzZzZzz'
         @fatigue -= 1
         rested if @fatigue <= 0
       end
@@ -126,7 +132,7 @@ class Miner < Chingu::GameObject
 
     state :quench_thirst do
       def execute
-        puts 'havin a drink *gulp gulp*'
+        speak 'havin a drink *gulp gulp*'
         @thirst -= 2
         not_thirsty if @thirst <= 0
       end

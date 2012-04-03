@@ -2,10 +2,19 @@ class Game < Chingu::Window
   def initialize
     super
     self.input = { :escape => :exit } # exits example on Escape
-    @miner = Miner.create(:x => 200, :y => 200, :image => Image['miner.png'])
-    @wife = Wife.create(:x => 200, :y => 400, :image => Image['cook1.png'])
+
+    @miner = Miner.create(:x => 200, :y => 200)
+    @miner.speak('asdfasdf')
+
+    @wife = Wife.create(:x => 200, :y => 400)
+
     @bank_balance = Chingu::Text.create('', :size => 20, :x => 20, :y => 20)
     @pocket_balance = Chingu::Text.create('', :size => 20, :x => 20, :y => 50)
+  end
+
+  def draw
+    super
+    Image["grass.png"].draw(0, 0, 0, 1, 1, 0xffffffff, :default)
   end
 
   def update

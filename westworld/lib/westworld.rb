@@ -11,7 +11,9 @@ include Gosu
 
 Image.autoload_dirs << File.join(ROOT_PATH, 'media')  
 
+require 'westworld/traits/vocal'
+require 'westworld/game_objects/base_object'
 require 'westworld/game_objects/miner'
 require 'westworld/game_objects/wife'
-require "westworld/game"
+require 'westworld/game'
 
