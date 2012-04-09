@@ -1,0 +1,25 @@
+GIT
+  remote: git://github.com/jspillers/vector2d.git
+  revision: 9aaf83f08c0abbb473afd895f46d88b99256afe6
+  specs:
+    vector2d (1.1.0)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    chingu (0.8.1)
+      crack
+      gosu (>= 0.7.25)
+      rest-client
+    crack (0.3.1)
+    gosu (0.7.43)
+    mime-types (1.18)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  chingu
+  vector2d!

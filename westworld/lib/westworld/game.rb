@@ -14,7 +14,6 @@ class Game < Chingu::Window
 
   def draw
     super
-    Image["grass.png"].draw(0, 0, 0, 1, 1, 0xffffffff, :default)
   end
 
   def update

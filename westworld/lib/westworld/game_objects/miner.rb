@@ -1,7 +1,7 @@
 class Miner < BaseObject
   attr_accessor :location, :gold_carried, :money_in_bank, :thirst, :fatigue, :x, :y
 
-  traits :timer, :vocal
+  traits :timer, :vocal, :velocity
 
   def initialize(opts)
     @gold_carried = 0
@@ -97,6 +97,8 @@ class Miner < BaseObject
 
     state :enter_mine_and_dig_for_nugget do 
       def execute
+        return if @traveling
+
         @fatigue += 1
 
         speak 'Mining for some gold'
@@ -115,6 +117,7 @@ class Miner < BaseObject
 
     state :visit_bank_and_deposit_gold do
       def execute
+        return if @traveling
         @money_in_bank += @gold_carried
         @gold_carried = 0
         speak 'Money in the bank baby!'
@@ -124,6 +127,7 @@ class Miner < BaseObject
 
     state :go_home_and_sleep_until_rested do
       def execute
+        return if @traveling
         speak 'ZzzZzZzz'
         @fatigue -= 1
         rested if @fatigue <= 0
@@ -132,6 +136,7 @@ class Miner < BaseObject
 
     state :quench_thirst do
       def execute
+        return if @traveling
         speak 'havin a drink *gulp gulp*'
         @thirst -= 2
         not_thirsty if @thirst <= 0
